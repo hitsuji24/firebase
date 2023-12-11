@@ -1,0 +1,8 @@
+body {
+    max-width:800px;
+    margin:0 25%;
+}
+
+#addTask{
+   margin-top:16px;
+}

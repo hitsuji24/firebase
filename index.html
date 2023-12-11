@@ -12,11 +12,11 @@
         <!-- タスク追加エリア -->
         <div id="addTask">
             <div>
-                タスク名
+                やること
                 <input type="text" id="taskName">
             </div>
             <div>
-                期日
+                期限
                 <input type="date" id="dueDate" value="2023-12-01" min="2023-12-01" max="2024-12-31" />
             </div>
             <div>
@@ -26,6 +26,7 @@
 
         <!--/ コンテンツ表示画面 -->
         <div id="output"></div>
+
 
 
         <!-- JQuery -->
@@ -70,15 +71,25 @@
                 console.log(data);
                 const task = data.val();
                 const key = data.key;
+
+                // 現在の日付とタスクの期限を比較
+                const today = new Date();
+                const dueDate = new Date(task.dueDate);
+
                 // 登録されたタスク一覧
                 let taskList = "<p>";
                 taskList += task.taskName;
                 taskList += "<br>";
                 taskList += task.dueDate;
                 taskList += "</p>";
+
+                // 期限が過ぎている場合の処理
+                if (today > dueDate) {
+                    taskList += " <video autoplay loop src='/video/kick.mp4'> </video>";
+                    // 【備忘録】同じ行に同じ引用符は使えないのでダブルかシングルクォートを使い分ける必要がある
+                    taskList += "<p>このタスクの期限が過ぎています。大丈夫ですか？</p>";
+                }
                 // ボタンの追加
-                taskList += "<button onclick='editTask(\"" + key + "\")'>編集</button>";
-                taskList += "<button onclick='deleteTask(\"" + key + "\")'>削除</button>";
                 taskList += "<button onclick='completeTask(\"" + key + "\")'>完了</button>";
                 $("#output").append(taskList); // #output の最後に追加
             });

@@ -3,31 +3,28 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Chatアプリ</title>
+    <title>タスク管理アプリ</title>
 </head>
 
 <body>
 
-    <!-- コンテンツ表示画面 -->
-    <div>
+    <!-- タスク追加エリア -->
+    <div id="addTask">
         <div>
-            名前: <input type="text" id="uname">
+            タスク名 
+            <input type="text" id="taskName">
         </div>
         <div>
-            <textarea name="" id="text" cols="30" rows="10"></textarea>
-            <button id="send">送信</button>
+            期日
+            <input type="date" id="dueDate" value="2018-07-22" min="2018-01-01" max="2018-12-31" />
         </div>
-        <div id="output"></div>
+        <div>
+            <button id="send">追加</button>
+        </div>
     </div>
 
-
-
-
-
-
-
     <!--/ コンテンツ表示画面 -->
-
+    <div id="output"></div>
 
 
     <!-- JQuery -->
@@ -61,22 +58,22 @@
         const db = getDatabase(app);
         const dbRef = ref(db, "chat");
         $("#send").on("click", function () {
-            const msg = {
-                uname: $("#uname").val(),
-                text: $("#text").val()
+            const task = {
+                taskName: $("#taskName").val(),
+                dueDate: $("#dueDate").val()
             };
             const newPostRef = push(dbRef);
-            set(newPostRef, msg);
+            set(newPostRef, task);
         });
 
         onChildAdded(dbRef, function (data) {
             console.log(data);
-            const msg = data.val();
+            const task = data.val();
             const key = data.key;
             let h = "<p>";
-            h += msg.uname;
+            h += task.taskName;
             h += "<br>";
-            h += msg.text;
+            h += task.dueDate;
             h += "</p>";
             $("#output").append(h); // #output の最後に追加
         });

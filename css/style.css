@@ -7,20 +7,25 @@ body {
    margin-top:16px;
 }
 
-.expiredItem {
-    display: flex;
-    background-color: #ffcccc; 
-    color: red; 
-    padding: 10px;
-    margin-bottom: 10px;
+.taskList{
+   width:800px;
+   display: flex;
+   align-items: center;
 }
+
+
 
 .taskItem {
     display: flex;
     align-items: center;
 }
 
-.taskItem video {
-    width: 100px; 
-    margin-left: 10px;
+.remindChara img{
+    width: 80px;
+
+}
+
+.archived {
+    color: #757575; /* 灰色のテキスト */
+    background-color: #f0f0f0; /* 薄灰色の背景 */
 }

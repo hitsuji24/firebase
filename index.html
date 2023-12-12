@@ -67,14 +67,29 @@
                 set(newPostRef, task);
             });
 
+           
+
+
             onChildAdded(dbRef, function (data) {
                 const task = data.val();
                 const key = data.key;
                 console.log(key);
-
+              
                 // 現在の日付とタスクの期限を比較
                 const today = new Date();
                 const dueDate = new Date(task.dueDate);
+  
+                function removeTask(taskKey) {
+                const taskRef = ref(db, "chat/" + taskKey);
+                set(taskRef, { ...dueDate, completed: true })
+                    .then(() => {
+                        // UIのスタイルを更新してアーカイブ表示にする
+                        $("#task-" + taskKey).addClass("archived");
+                    })
+                    .catch((error) => {
+                        console.error("Error updating task: ", error);
+                    });
+            }
 
                 // テンプレートを取得
                 let template = $("#task-template").html();
@@ -85,36 +100,49 @@
                 template = template.replace("{key}", key);
 
 
-                // 期限が過ぎている場合の処理
-                if (today > dueDate) {
-                    // remindCharaにビデオを追加
-                    const videoPath = "/video/kick.mp4"
-                    template = template.replace("{charaVideo}", videoPath);
 
-                    // remindMsgにメッセージを追加
-                    template = template.replace("{msg}", "忘れてませんか？");
+                // 期限が過ぎている場合の処理
+                if (today > dueDate && !task.completed) {
+                    const videoPath = "img/urusaihito.gif"
+                    template = template.replace("{charaVideo}", videoPath);
                 } else {
-                    // 期限が過ぎていない場合、remindCharaとremindMsgは空のままにする
-                    template = template.replace("<div class=\"remindChara\"></div>", "");
-                    template = template.replace("<div class=\"remindMsg\"></div>", "");
+                    // 期限が過ぎていない場合、またはタスクが完了している場合、画像を表示しない
+                    template = template.replace("{charaVideo}", "");
+                    template = template.replace("{msg}", "");
+                }
+
+                // テンプレートでのボタン表示制御
+                if (!task.completed) {
+                    template = template.replace("{completeButton}", "<button onclick='removeTask(\"" + key + "\")'>完了</button>");
+                } else {
+                    template = template.replace("{completeButton}", "");
                 }
 
                 // ページに挿入
-                $("#output").append(template);
+                let taskElement = $(template);
+                $("#output").append(taskElement);
+
+                // 完了ボタンにイベントリスナーを追加
+                taskElement.find('.completeTaskButton').on('click', function () {
+                    removeTask(key);
+                });
             });
+
+
 
         </script>
         <!-- HTML内でのタスクテンプレート -->
         <script type="text/template" id="task-template">
-    <div class="reminder">
-    <div class="remindChara"><video autoplay loop src='{charaVideo}'></video></div>
-    <div class="remindMsg"><p>{msg}</p></div>
-</div>
-    <div class='taskItem'>
-        <p>{taskName}<br>{dueDate}</p>
-    </div>
-    <div class='completeButton'>
-        <button onclick='completeTask("{key}")'>完了</button>
+    <div class="taskList">
+        <div class="reminder">
+            <div class="remindChara"><img src='{charaVideo}'></div>
+        </div>
+        <div class='taskItem'>
+            <p>{taskName}<br>{dueDate}</p>
+        </div>
+        <div class='completeButton'>
+            <button class='completeTaskButton' data-key='{key}'>完了</button>
+        </div>
     </div>
 </script>
     </body>

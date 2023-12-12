@@ -6,3 +6,21 @@ body {
 #addTask{
    margin-top:16px;
 }
+
+.expiredItem {
+    display: flex;
+    background-color: #ffcccc; 
+    color: red; 
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.taskItem {
+    display: flex;
+    align-items: center;
+}
+
+.taskItem video {
+    width: 100px; 
+    margin-left: 10px;
+}

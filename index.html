@@ -76,21 +76,40 @@
                 const today = new Date();
                 const dueDate = new Date(task.dueDate);
 
-                // 登録されたタスク一覧
-                let taskList = "<p>";
-                taskList += task.taskName;
-                taskList += "<br>";
-                taskList += task.dueDate;
-                taskList += "</p>";
+                let taskList = "";
 
-                // 期限が過ぎている場合の処理
+                // 期限が過ぎている場合と通常の処理
+                // 【備忘録】同じ行に同じ引用符は使えないのでダブルかシングルクォートを使い分ける必要がある
                 if (today > dueDate) {
-                    taskList += " <video autoplay loop src='/video/kick.mp4'> </video>";
-                    // 【備忘録】同じ行に同じ引用符は使えないのでダブルかシングルクォートを使い分ける必要がある
-                    taskList += "<p>このタスクの期限が過ぎています。大丈夫ですか？</p>";
-                }
-                // ボタンの追加
-                taskList += "<button onclick='completeTask(\"" + key + "\")'>完了</button>";
+                    taskList += "<div class='expiredItem'>"
+                    taskList += "<div class='expiredVideo'>"
+                    taskList += " <video autoplay loop src='/video/kick.mp4'> </video></div>";
+                    taskList += "<div class='expiredMsg'><p>このタスクの期限が過ぎています。大丈夫ですか？</p>";
+                    taskList += "</div>";
+
+                    taskList += "<div class='taskItem'><p>";
+                    taskList += task.taskName;
+                    taskList += "<br>";
+                    taskList += task.dueDate;
+                    taskList += "</p></div>";
+
+                    // ボタンの追加
+                    taskList += "<div class='button'><p>";
+                    taskList += "<button onclick='completeTask(\"" + key + "\")'>完了</button>";
+                    taskList += "</div>";
+                }else {
+                    taskList += "<div class='taskItem'><p>";
+                    taskList += task.taskName;
+                    taskList += "<br>";
+                    taskList += task.dueDate;
+                    taskList += "</p></div>";
+
+                    // ボタンの追加
+                    taskList += "<div class='button'><p>";
+                    taskList += "<button onclick='completeTask(\"" + key + "\")'>完了</button>";
+                    taskList += "</div>";
+    }
+
                 $("#output").append(taskList); // #output の最後に追加
             });
 

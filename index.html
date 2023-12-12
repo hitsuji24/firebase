@@ -68,54 +68,55 @@
             });
 
             onChildAdded(dbRef, function (data) {
-                console.log(data);
                 const task = data.val();
                 const key = data.key;
+                console.log(key);
 
                 // 現在の日付とタスクの期限を比較
                 const today = new Date();
                 const dueDate = new Date(task.dueDate);
 
-                let taskList = "";
+                // テンプレートを取得
+                let template = $("#task-template").html();
 
-                // 期限が過ぎている場合と通常の処理
-                // 【備忘録】同じ行に同じ引用符は使えないのでダブルかシングルクォートを使い分ける必要がある
+                // 実際のデータで置き換え
+                template = template.replace("{taskName}", task.taskName);
+                template = template.replace("{dueDate}", task.dueDate);
+                template = template.replace("{key}", key);
+
+
+                // 期限が過ぎている場合の処理
                 if (today > dueDate) {
-                    taskList += "<div class='expiredItem'>"
-                    taskList += "<div class='expiredVideo'>"
-                    taskList += " <video autoplay loop src='/video/kick.mp4'> </video></div>";
-                    taskList += "<div class='expiredMsg'><p>このタスクの期限が過ぎています。大丈夫ですか？</p>";
-                    taskList += "</div>";
+                    // remindCharaにビデオを追加
+                    const videoPath = "/video/kick.mp4"
+                    template = template.replace("{charaVideo}", videoPath);
 
-                    taskList += "<div class='taskItem'><p>";
-                    taskList += task.taskName;
-                    taskList += "<br>";
-                    taskList += task.dueDate;
-                    taskList += "</p></div>";
+                    // remindMsgにメッセージを追加
+                    template = template.replace("{msg}", "忘れてませんか？");
+                } else {
+                    // 期限が過ぎていない場合、remindCharaとremindMsgは空のままにする
+                    template = template.replace("<div class=\"remindChara\"></div>", "");
+                    template = template.replace("<div class=\"remindMsg\"></div>", "");
+                }
 
-                    // ボタンの追加
-                    taskList += "<div class='button'><p>";
-                    taskList += "<button onclick='completeTask(\"" + key + "\")'>完了</button>";
-                    taskList += "</div>";
-                }else {
-                    taskList += "<div class='taskItem'><p>";
-                    taskList += task.taskName;
-                    taskList += "<br>";
-                    taskList += task.dueDate;
-                    taskList += "</p></div>";
-
-                    // ボタンの追加
-                    taskList += "<div class='button'><p>";
-                    taskList += "<button onclick='completeTask(\"" + key + "\")'>完了</button>";
-                    taskList += "</div>";
-    }
-
-                $("#output").append(taskList); // #output の最後に追加
+                // ページに挿入
+                $("#output").append(template);
             });
 
-
         </script>
-
+        <!-- HTML内でのタスクテンプレート -->
+        <script type="text/template" id="task-template">
+    <div class="reminder">
+    <div class="remindChara"><video autoplay loop src='{charaVideo}'></video></div>
+    <div class="remindMsg"><p>{msg}</p></div>
+</div>
+    <div class='taskItem'>
+        <p>{taskName}<br>{dueDate}</p>
+    </div>
+    <div class='completeButton'>
+        <button onclick='completeTask("{key}")'>完了</button>
+    </div>
+</script>
     </body>
 
 </List>

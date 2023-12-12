@@ -44,7 +44,7 @@
                 from "https://cdnjs.cloudflare.com/ajax/libs/firebase/10.7.1/firebase-database.js";
             // Your web app's Firebase configuration
             const firebaseConfig = {
-                apiKey: "",
+                apiKey: "AIzaSyDztU9_1OcaAQGxYzcdTuFyZH_fy5YTqGI",
                 authDomain: "chat-c249d.firebaseapp.com",
                 projectId: "chat-c249d",
                 storageBucket: "chat-c249d.appspot.com",
@@ -79,17 +79,17 @@
                 const today = new Date();
                 const dueDate = new Date(task.dueDate);
   
-                function removeTask(taskKey) {
-                const taskRef = ref(db, "chat/" + taskKey);
-                set(taskRef, { ...dueDate, completed: true })
-                    .then(() => {
-                        // UIのスタイルを更新してアーカイブ表示にする
-                        $("#task-" + taskKey).addClass("archived");
-                    })
-                    .catch((error) => {
-                        console.error("Error updating task: ", error);
-                    });
-            }
+            //     function removeTask(taskKey) {
+            //     const taskRef = ref(db, "chat/" + taskKey);
+            //     set(taskRef, { ...dueDate, completed: true })
+            //         .then(() => {
+            //             // UIのスタイルを更新してアーカイブ表示にする
+            //             $("#task-" + taskKey).addClass("archived");
+            //         })
+            //         .catch((error) => {
+            //             console.error("Error updating task: ", error);
+            //         });
+            // }
 
                 // テンプレートを取得
                 let template = $("#task-template").html();
@@ -102,8 +102,9 @@
 
 
                 // 期限が過ぎている場合の処理
-                if (today > dueDate && !task.completed) {
-                    const videoPath = "img/urusaihito.gif"
+                if (today > dueDate) {
+                    // remindCharaにビデオを追加
+                    const videoPath = "./img/urusaihito.gif"
                     template = template.replace("{charaVideo}", videoPath);
                 } else {
                     // 期限が過ぎていない場合、またはタスクが完了している場合、画像を表示しない
@@ -112,20 +113,22 @@
                 }
 
                 // テンプレートでのボタン表示制御
-                if (!task.completed) {
-                    template = template.replace("{completeButton}", "<button onclick='removeTask(\"" + key + "\")'>完了</button>");
-                } else {
-                    template = template.replace("{completeButton}", "");
-                }
+                // if (!task.completed) {
+                //     template = template.replace("{completeButton}", "<button onclick='removeTask(\"" + key + "\")'>完了</button>");
+                // } else {
+                //     template = template.replace("{completeButton}", "");
+                // }
 
                 // ページに挿入
-                let taskElement = $(template);
-                $("#output").append(taskElement);
+                $("#output").append(template);
+
+                // let taskElement = $(template);
+                // $("#output").append(taskElement);
 
                 // 完了ボタンにイベントリスナーを追加
-                taskElement.find('.completeTaskButton').on('click', function () {
-                    removeTask(key);
-                });
+                // taskElement.find('.completeTaskButton').on('click', function () {
+                //     removeTask(key);
+                // });
             });
 
 
